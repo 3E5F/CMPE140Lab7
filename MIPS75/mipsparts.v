@@ -16,11 +16,11 @@ module alu(input      [31:0] a, b,
   assign slt = sum[31];
 
   always@(*)
-    case(alucont[2:0])
-      3'b000: result <= a & b;
-      3'b001: result <= a | b;
-      3'b010: result <= sum;
-      3'b011: result <= slt;
+    case(alucont[1:0])
+      2'b00: result <= a & b;
+      2'b01: result <= a | b;
+      2'b10: result <= sum;
+      2'b11: result <= slt;
     endcase
 
   assign zero = (result == 32'b0);

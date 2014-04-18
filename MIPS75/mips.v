@@ -55,13 +55,14 @@ module controller(input  [5:0] op, funct,
   wire       branch;
   wire Jum1, Jum2;
 
-  assign jump = Jum1 | Jum2;
+  
   
   maindec md(op, memtoreg, memwrite, branch,
              alusrc, regdst, regwrite, Jum1,
              aluop, JAL);
   auxdec  ad(funct, aluop, alucontrol, WEHi, WELo, HiLo, multHiLo, JR, Jum2);
 
+  assign jump = Jum1 | Jum2;
   assign pcsrc = branch & zero;
 endmodule
 
@@ -94,16 +95,22 @@ module maindec(input  [5:0] op,
 		6'b000100: controls <= 10'b0001000010; //BEQ
 		6'b001000: controls <= 10'b1010000000; //ADDI
 		6'b000010: controls <= 10'b0000001000; //J
-		6'b000011: controls <= 10'b0000001001; //JAL
+		6'b000011: controls <= 10'b1000001001; //JAL
       default:   controls <= 10'bxxxxxxxxxx; //???
     endcase
 endmodule
+
+
+
+
+
+
+
 
 module auxdec(input      [5:0] funct,
               input      [1:0] aluop,
               output reg [2:0] alucontrol,
 			  output reg WEHi, WELo, HiLo, multHiLo, JR, Jum);
-
 
   always @(*)
     case(aluop)
@@ -157,6 +164,7 @@ module auxdec(input      [5:0] funct,
 								Jum <=0;
 							end
 		  6'b001000: begin						//	JR
+								alucontrol <= 3'b000;
 								WEHi <= 0;	
 								WELo <= 0;
 								HiLo <= 0;
@@ -164,15 +172,28 @@ module auxdec(input      [5:0] funct,
 								JR <= 1;
 								Jum <=1;
 							end
-		  6'b010010: begin						//	MFLO
-								WEHi <= 0;	
+			
+		//need case for multiplier
+		  6'b011001: begin
+								alucontrol<= 3'b000;
+								WEHi <= 1;	
 								WELo <= 1;
+								HiLo <= 0;
+								multHiLo <= 0;
+								Jum <=0;
+						 end
+		
+		  6'b010010: begin						//	MFLO
+								alucontrol<= 3'b000;
+								WEHi <= 0;	
+								WELo <= 0;
 								HiLo <= 0;
 								multHiLo <= 1;
 								Jum <=0;
 							 end
 		  6'b010000: begin						//	MFHI
-								WEHi <= 1;	
+								alucontrol<=3'b000;
+								WEHi <= 0;	
 								WELo <= 0;
 								HiLo <= 1;
 								multHiLo <= 1;

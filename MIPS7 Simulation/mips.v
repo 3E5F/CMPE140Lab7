@@ -37,11 +37,6 @@ module mips(input         clk, reset,
 endmodule
 
 
-
-
-
-
-
 module controller(input  [5:0] op, funct,
                   input        zero,
                   output       memtoreg, memwrite,
@@ -65,13 +60,6 @@ module controller(input  [5:0] op, funct,
   assign jump = Jum1 | Jum2;
   assign pcsrc = branch & zero;
 endmodule
-
-
-
-
-
-
-
 
 module maindec(input  [5:0] op,
                output       memtoreg, memwrite,
@@ -99,13 +87,6 @@ module maindec(input  [5:0] op,
       default:   controls <= 10'bxxxxxxxxxx; //???
     endcase
 endmodule
-
-
-
-
-
-
-
 
 module auxdec(input      [5:0] funct,
               input      [1:0] aluop,

@@ -261,6 +261,10 @@ module datapath(
 
 	wire [4:0]  writereg;
 	wire [31:0] pcnext, pcnextbr, pcplus4, pcbranch, signimm, signimmsh, srca, srcb, result;
+	
+	wire [31:0] JALMux1Out, JRMuxOut;
+	wire [4:0] JALMux2Out;
+	wire [31:0] JROut;
 
 	// next PC logic
 	flopr #(32) pcreg(clk, reset, pcnext, pc);
@@ -286,9 +290,7 @@ module datapath(
 	//input WEHi, WELo, HiLo, multHiLo;
 	wire[31:0] regHiOut, regLoOut, HiLoOut, multHiLoOut;
 	
-	wire [31:0] JALMux1Out, JRMuxOut;
-	wire [4:0] JALMux2Out;
-	wire [31:0] JROut;
+	
 	
 	mult multi(.RD1(srca), .RD2(writedata), .res(multOut));
 	multReg regHi(.in(multOut[63:32]),.WE(WEHi),.out(regHiOut),.clk(clk));
